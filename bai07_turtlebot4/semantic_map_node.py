@@ -24,10 +24,14 @@ class SemanticMap(Node):
             "/semantic_regions",
             QoSProfile(depth=1, durability=DurabilityPolicy.TRANSIENT_LOCAL),
         )
+        self.cached = None
         self.create_timer(3.0, self.publish)
         self.publish()
 
     def publish(self):
+        if self.cached is not None:
+            self.pub.publish(self.cached)
+            return
         arr = MarkerArray()
         colors = [(0.2, 0.55, 0.9), (0.95, 0.55, 0.15), (0.2, 0.75, 0.35)]
         for r, color in zip(self.cfg["regions"], colors):
@@ -73,6 +77,7 @@ class SemanticMap(Node):
             goal.scale.z = 0.12
             goal.color.a = 1.0
             arr.markers.append(goal)
+        self.cached = arr
         self.pub.publish(arr)
 
 

@@ -8,6 +8,8 @@ cd "$workspace_dir"
 if [[ "${BAI07_SKIP_BUILD:-0}" != 1 ]]; then colcon build --symlink-install --packages-select bai07_turtlebot4; fi
 source "$workspace_dir/install/setup.bash"
 export ROS_DOMAIN_ID="${BAI07_ROS_DOMAIN_ID:-97}"
+exec 9>"/tmp/bai07_ros_domain_${ROS_DOMAIN_ID}.lock"
+flock -n 9 || { printf "Bài 07 đang dùng domain %s; chọn BAI07_ROS_DOMAIN_ID khác.\n" "$ROS_DOMAIN_ID" >&2; exit 1; }
 export ROS_LOCALHOST_ONLY=1
 export IGN_PARTITION="${BAI07_IGN_PARTITION:-bai07_$(date +%Y%m%d_%H%M%S)_$$}"
 : "${DISPLAY:?X11 DISPLAY is required for the demo}"
