@@ -17,4 +17,4 @@ min_average_logprob: -1.0
 max_compression_ratio: 2.4
 asr_target_peak: 0.6
 asr_max_gain: 40.0
-initial_prompt: "Các khu vực A, B, C. Đi đến khu vực A. Di chuyển từ khu vực A đến khu vực B."
+initial_prompt: "A, B, C."

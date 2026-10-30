@@ -79,7 +79,7 @@ Bấm **Nghe một câu**, đợi dòng **Nói câu lệnh…**, nói rồi ng�
 | Đi đến khu vực Z | Báo không tồn tại; không gửi goal |
 | Di chuyển từ khu vực A đến khu vực Z | Từ chối toàn câu, không đi đến A |
 
-Có alias “phía tây bắc”, “phía tây nam”, “phía đông”, và cách đọc chữ “bê”, “xê”. Không gán tên phòng cho các vùng vị trí này. Khi đang chạy, câu đi mới báo BUSY. Cùng utterance ID chỉ được xử lý một lần. Nút **Hủy task** gửi action cancellation, chờ result trước khi cho task mới. Im lặng sau câu đã nhận không hủy task. Mất microphone/ASR thật, mất sensor/TF, hazard nguy hiểm hoặc timeout làm hủy chuỗi; không tự gửi tiếp B hoặc tự thử lại.
+Có alias “phía tây bắc”, “phía tây nam”, “phía đông”, và cách đọc chữ “bê”, “xê”. Alias ASR “ái” được đăng ký rõ cho A sau lượt micro; parser vẫn tra alias chính xác, không fuzzy-match tên lạ. Không gán tên phòng cho các vùng vị trí này. Khi đang chạy, câu đi mới báo BUSY. Cùng utterance ID chỉ được xử lý một lần. Nút **Hủy task** gửi action cancellation, chờ result trước khi cho task mới. Im lặng sau câu đã nhận không hủy task. Mất microphone/ASR thật, mất sensor/TF, hazard nguy hiểm hoặc timeout làm hủy chuỗi; không tự gửi tiếp B hoặc tự thử lại.
 
 Vận tốc và tránh vật cản do Nav2 xử lý. Mỗi goal cần status `SUCCEEDED`, sai số vị trí ≤0,30 m, góc ≤0,30 rad và pose cuối thuộc đúng mask vùng. Nav2 goal checker dùng 0,25 m/rad. BACKUP_LIMIT=0 sau undock không được tính thành bump; BUMP/CLIFF/STALL/WHEEL_DROP được ghi và hủy task.
 
