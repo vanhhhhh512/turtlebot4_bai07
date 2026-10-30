@@ -3,7 +3,7 @@
 <description>Vietnamese voice navigation with labelled regions on TurtleBot 4.</description>
 <maintainer email="23020719@vnu.edu.vn">Đỗ Việt Anh</maintainer><license>Apache-2.0</license>
 <buildtool_depend>ament_python</buildtool_depend>
-<exec_depend>rclpy</exec_depend><exec_depend>std_msgs</exec_depend><exec_depend>geometry_msgs</exec_depend>
+<exec_depend>rclpy</exec_depend><exec_depend>rmw_cyclonedds_cpp</exec_depend><exec_depend>std_msgs</exec_depend><exec_depend>geometry_msgs</exec_depend>
 <exec_depend>nav_msgs</exec_depend><exec_depend>nav2_msgs</exec_depend><exec_depend>action_msgs</exec_depend>
 <exec_depend>visualization_msgs</exec_depend><exec_depend>irobot_create_msgs</exec_depend>
 <exec_depend>controller_manager_msgs</exec_depend><exec_depend>sensor_msgs</exec_depend><exec_depend>tf2_ros</exec_depend><exec_depend>ros_gz_bridge</exec_depend><exec_depend>ros_gz_interfaces</exec_depend>

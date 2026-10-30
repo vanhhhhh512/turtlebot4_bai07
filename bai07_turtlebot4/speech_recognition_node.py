@@ -80,6 +80,12 @@ class Speech(Node):
                 )
 
     def record(self):
+        updated = yaml.safe_load(
+            Path(self.get_parameter("config_file").value).read_text()
+        )
+        for key in updated:
+            if key not in ("model", "device"):
+                self.cfg[key] = updated[key]
         cfg = self.cfg
         rate = cfg["sample_rate"]
         samples = int(0.03 * rate)
@@ -152,6 +158,9 @@ class Speech(Node):
                                 if noise
                                 else cfg["energy_threshold"]
                             ),
+                        )
+                        threshold = min(
+                            threshold, cfg.get("maximum_energy_threshold", 0.004)
                         )
                         announced = True
                         mono = now

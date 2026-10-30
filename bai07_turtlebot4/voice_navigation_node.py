@@ -113,7 +113,10 @@ class VoiceNavigation(Node):
         )
         self.create_subscription(String, "/speech_status", self.on_speech_status, 10)
         self.create_subscription(
-            PoseWithCovarianceStamped, "/amcl_pose", self.on_amcl, 10
+            PoseWithCovarianceStamped,
+            "/amcl_pose",
+            self.on_amcl,
+            QoSProfile(depth=1, durability=DurabilityPolicy.TRANSIENT_LOCAL),
         )
         self.create_subscription(
             Odometry, "/odom", self.on_odom, qos_profile_sensor_data
@@ -482,6 +485,8 @@ class VoiceNavigation(Node):
 
     def tick(self):
         ready, reason = self.ready()
+        if ready and self.state == "WAITING":
+            self.state = "IDLE"
         pose = self.current_pose()
         if self.command:
             if not ready:

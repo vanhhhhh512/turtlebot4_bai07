@@ -114,7 +114,7 @@ source /duong/dan/run/session.env
 python3 ~/bai07_ws/src/bai07_turtlebot4/scripts/record_demo.py "$BAI07_RUN/demo_microphone.mp4"
 ```
 
-Video thu trực tiếp màn hình và micro PulseAudio; Ctrl+C để chốt MP4. Nói A/B/C, sau C nói A→B, cuối cùng nói Z. Chờ robot hoàn thành từng task; không dùng teleop hay gõ text thay câu nói. Có thể dùng OBS nếu cần layout/nguồn âm khác. Chỉ công bố video sau khi xem và kiểm tra tiếng/hình.
+Video thu trực tiếp nội dung ba cửa sổ RViz/Gazebo/transcript và micro PulseAudio (highpass 100 Hz, gain audio mặc định 8 cho giọng nhỏ); Ctrl+C để chốt MP4. Nói A/B/C, sau C nói A→B, cuối cùng nói Z. Chờ robot hoàn thành từng task; không dùng teleop hay gõ text thay câu nói. Có thể dùng OBS nếu cần layout/nguồn âm khác. Chỉ công bố video sau khi xem và kiểm tra tiếng/hình.
 
 ## Kiểm tra bằng text và vật cản
 

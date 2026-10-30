@@ -3,7 +3,8 @@ device: cuda
 language: vi
 fp16: false
 microphone_warmup_sec: 1.2
-noise_multiplier: 3.0
+noise_multiplier: 2.0
+maximum_energy_threshold: 0.004
 max_clipping_fraction: 0.02
 pulse_source: alsa_input.pci-0000_05_00.6.analog-stereo
 sample_rate: 16000
