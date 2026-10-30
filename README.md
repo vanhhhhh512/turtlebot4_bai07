@@ -127,6 +127,8 @@ python3 ~/bai07_ws/src/bai07_turtlebot4/scripts/send_text_test.py 'Đi đến kh
 python3 ~/bai07_ws/src/bai07_turtlebot4/scripts/run_text_checks.py --output "$BAI07_RUN/text_checks.json"
 ```
 
+`check_aborted_action.py --domain DOMAIN --output DIR` kiểm tra nhánh ABORTED bằng action server tổng hợp ở một ROS domain trống, không mô phỏng robot hoặc micro.
+
 `maze_obstacle.py create/remove --output FILE` thêm/xóa box thật trong **partition đang source**; các tùy chọn `--x --y --size --name` xác định vật cản. Dùng để kiểm tra laser/costmap/đường vòng hoặc goal bị chặn. Không tính thử có va chạm/hủy là lượt đến đích thành công.
 
 Topic: `/recognized_text` (String JSON: `utterance_id`, `text`, `created_at` Unix giây, `source` microphone/text_test/audio_test; micro thêm audio_path/record_start/record_end/asr_s), `/speech_status`, `/voice_navigation_status`, `/semantic_regions`, `/voice_actual_path`. Lệnh thiếu schema hoặc quá 30 s bị từ chối. `/speech_control`: String `listen`; `/voice_cancel`: String bất kỳ.

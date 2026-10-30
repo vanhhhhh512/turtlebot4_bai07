@@ -69,7 +69,7 @@ class Panel(Node):
             self.root, height=6, font=("DejaVu Sans", 10), state="disabled"
         )
         self.history.pack(fill="both", expand=True, padx=12, pady=8)
-        qos = QoSProfile(depth=1, durability=DurabilityPolicy.TRANSIENT_LOCAL)
+        qos = QoSProfile(depth=20, durability=DurabilityPolicy.TRANSIENT_LOCAL)
         self.create_subscription(String, "/speech_status", self.speech, qos)
         self.create_subscription(String, "/voice_navigation_status", self.nav, qos)
         self.root.protocol("WM_DELETE_WINDOW", self.root.quit)
@@ -90,6 +90,11 @@ class Panel(Node):
             self.add("Nghe: " + d["text"] + f" ({d['asr_s']:.2f} s)")
         elif d.get("message"):
             self.mic.set(d["message"])
+            if d["event"] == "LISTENING":
+                self.heard.set("Đang nghe…")
+            elif d["event"] in ("ERROR", "NO_SPEECH", "REJECTED_AUDIO"):
+                self.heard.set("Chưa có câu lệnh hợp lệ")
+                self.add(d["message"])
 
     def nav(self, msg):
         try:

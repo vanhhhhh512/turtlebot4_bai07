@@ -42,7 +42,7 @@ class Speech(Node):
         self.status = self.create_publisher(
             String,
             "/speech_status",
-            QoSProfile(depth=1, durability=DurabilityPolicy.TRANSIENT_LOCAL),
+            QoSProfile(depth=20, durability=DurabilityPolicy.TRANSIENT_LOCAL),
         )
         self.create_subscription(String, "/speech_control", self.control, 10)
         self.create_timer(0.05, self.drain)
