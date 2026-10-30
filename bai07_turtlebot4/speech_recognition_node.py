@@ -282,14 +282,22 @@ class Speech(Node):
                         utterance_id=meta["utterance_id"],
                         message="Đang nhận dạng tiếng Việt…",
                     )
+                    audio = np.frombuffer(raw, dtype="<i2").astype("float32") / 32768
+                    gain = min(
+                        self.cfg.get("asr_max_gain", 40.0),
+                        self.cfg.get("asr_target_peak", 0.6)
+                        / max(float(np.abs(audio).max()), 0.001),
+                    )
+                    audio = np.clip(audio * gain, -1.0, 1.0)
                     started = time.monotonic()
                     result = model.transcribe(
-                        np.frombuffer(raw, dtype="<i2").astype("float32") / 32768,
+                        audio,
                         language="vi",
                         task="transcribe",
                         fp16=self.cfg.get("fp16", False),
                         temperature=0.0,
                         condition_on_previous_text=False,
+                        initial_prompt=self.cfg.get("initial_prompt"),
                         verbose=None,
                     )
                     elapsed = time.monotonic() - started
@@ -318,6 +326,7 @@ class Speech(Node):
                         asr_s=elapsed,
                         segments=qualities,
                         model=self.cfg["model"],
+                        input_gain=gain,
                     )
                     good = segments and all(
                         all(

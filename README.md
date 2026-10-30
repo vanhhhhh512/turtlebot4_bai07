@@ -104,7 +104,7 @@ python3 -m unittest discover -s ~/bai07_ws/src/bai07_turtlebot4/tests -v
 
 ## Ghi log và quay demo thật
 
-Mỗi run lưu WAV, `speech.jsonl`, `navigation.jsonl`, `trajectory.csv` và log launch. `sensors/` lưu laser, snapshot costmap và ground truth chỉ để đối chiếu nghiệm thu; recorder này không gửi pose/goal/vận tốc. Chuỗi ID nối audio → transcript → command → UUID action → result. ASR `small`, language `vi`, task `transcribe`; thu PCM mono 16 kHz bằng `parec`, bỏ transient mở mic, highpass 100 Hz, ngưỡng năng lượng theo nền, kiểm tra clipping/no-speech/logprob/compression trước khi phát câu cuối. ASR chạy worker riêng và chỉ nhận một câu mỗi lần bấm.
+Mỗi run lưu WAV, `speech.jsonl`, `navigation.jsonl`, `trajectory.csv` và log launch. `sensors/` lưu laser, snapshot costmap và ground truth chỉ để đối chiếu nghiệm thu; recorder này không gửi pose/goal/vận tốc. Chuỗi ID nối audio → transcript → command → UUID action → result. ASR `small`, language `vi`, task `transcribe`; thu PCM mono 16 kHz bằng `parec`, bỏ transient mở mic, highpass 100 Hz, ngưỡng năng lượng theo nền, chuẩn hóa mức âm ASR và gợi ý từ vựng khu vực A/B/C, kiểm tra clipping/no-speech/logprob/compression trước khi phát câu cuối. ASR chạy worker riêng và chỉ nhận một câu mỗi lần bấm.
 
 Quay video ở terminal thứ hai (script từ chối màn hình khóa, không ghi đè video cũ):
 
