@@ -57,6 +57,8 @@ def main():
                     continue
                 run("windowsize", window, w, h)
                 run("windowmove", window, x, y)
+                if moved.get(window, 0) == 0:
+                    run("windowactivate", window)
                 moved[window] = moved.get(window, 0) + 1
         time.sleep(2)
 

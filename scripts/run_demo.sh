@@ -11,11 +11,14 @@ export ROS_DOMAIN_ID="${BAI07_ROS_DOMAIN_ID:-97}"
 exec 9>"/tmp/bai07_ros_domain_${ROS_DOMAIN_ID}.lock"
 flock -n 9 || { printf "Bài 07 đang dùng domain %s; chọn BAI07_ROS_DOMAIN_ID khác.\n" "$ROS_DOMAIN_ID" >&2; exit 1; }
 export ROS_LOCALHOST_ONLY=1
+export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+export CYCLONEDDS_URI="file://$package_dir/config/cyclonedds.xml"
 export IGN_PARTITION="${BAI07_IGN_PARTITION:-bai07_$(date +%Y%m%d_%H%M%S)_$$}"
 : "${DISPLAY:?X11 DISPLAY is required for the demo}"
 run_dir="${BAI07_OUTPUT_DIR:-$HOME/bai07_runs/$(date +%Y%m%d_%H%M%S)_$$}"
 mkdir -p "$run_dir"
 printf 'export ROS_DOMAIN_ID=%q\nexport ROS_LOCALHOST_ONLY=1\nexport IGN_PARTITION=%q\nexport BAI07_RUN=%q\n' "$ROS_DOMAIN_ID" "$IGN_PARTITION" "$run_dir" > "$run_dir/session.env"
+printf 'export RMW_IMPLEMENTATION=%q\nexport CYCLONEDDS_URI=%q\n' "$RMW_IMPLEMENTATION" "$CYCLONEDDS_URI" >> "$run_dir/session.env"
 python3 "$package_dir/scripts/arrange_windows.py" > "$run_dir/windows.log" 2>&1 &
 arranger_pid=$!
 trap 'kill "$arranger_pid" 2>/dev/null || true' EXIT

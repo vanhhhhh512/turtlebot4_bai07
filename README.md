@@ -9,7 +9,7 @@ Ubuntu 22.04, ROS 2 Humble, TurtleBot 4 Standard, Ignition Fortress, Nav2, Pytho
 Cài ROS Humble và simulator theo [TurtleBot 4 Simulation](https://turtlebot.github.io/turtlebot4-user-manual/software/simulation.html), sau đó:
 
 ```bash
-sudo apt install ros-humble-turtlebot4-simulator ros-humble-turtlebot4-navigation \
+sudo apt install ros-humble-turtlebot4-simulator ros-humble-turtlebot4-navigation ros-humble-rmw-cyclonedds-cpp \
   python3-colcon-common-extensions python3-opencv python3-numpy python3-scipy \
   python3-yaml python3-matplotlib python3-tk python3-venv pulseaudio-utils xdotool ffmpeg
 ```
@@ -64,7 +64,7 @@ BAI07_UNDERLAY=~/bai07_underlay \
 
 Nếu dùng Python ASR đã cài sẵn ở user/system, bỏ argument `asr_python`. Script tạo run mới, lưu `session.env`, mở Gazebo bên phải trên, transcript bên phải dưới và RViz bên trái. Cần mở khóa màn hình. Chờ `READY` của robot và ASR. Node chuẩn bị kích hoạt controller, undock rồi khởi tạo AMCL một lần từ spawn (0,0,0) + odom. Navigation tiếp tục dùng AMCL/scan/map/TF; ground truth không dùng làm đầu vào.
 
-Mặc định ROS domain **97**, partition Ignition mới mỗi phiên. Kiểm tra phiên khác trước khi chạy, đổi bằng `BAI07_ROS_DOMAIN_ID`/`BAI07_IGN_PARTITION` nếu trùng. Ctrl+C ở terminal launch đóng đúng phiên đó. Không dùng lệnh kill rộng.
+Mặc định ROS domain **97**, partition Ignition mới mỗi phiên. Script dùng Cyclone DDS với discovery localhost theo `config/cyclonedds.xml`; `session.env` lưu cả cấu hình DDS cho terminal kiểm tra. Kiểm tra phiên khác trước khi chạy, đổi bằng `BAI07_ROS_DOMAIN_ID`/`BAI07_IGN_PARTITION` nếu trùng. Ctrl+C ở terminal launch đóng đúng phiên đó. Không dùng lệnh kill rộng.
 
 ## Nói và quan sát
 
