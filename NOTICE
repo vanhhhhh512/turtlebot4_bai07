@@ -1,0 +1,6 @@
+Bài 07 — Đỗ Việt Anh, 23020719.
+Original map: https://github.com/vanhhhhh512/turtlebot4_bai04 (unchanged bytes).
+AMCL/Nav2/RViz configuration adapted from turtlebot4_bai05, Apache-2.0.
+Simulation world maze.sdf supplied by turtlebot4_ignition_bringup (Clearpath Robotics).
+Create 3 simulation overrides, when used, remain separate dependencies; see README.
+Whisper: https://github.com/openai/whisper (MIT); weights downloaded separately.

@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+build/
+install/
+log/
+runs/
+*.wav
+*.mp4
+*.mkv
+*.pdf
+*.tex
+*.zip
+*.pt
+.cache/
+.venv/

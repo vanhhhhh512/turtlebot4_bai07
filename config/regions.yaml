@@ -1,0 +1,95 @@
+frame_id: map
+method: manual polygons clipped to largest free component
+map_yaml: map_navigation.yaml
+labels: ../maps/region_labels.npy
+robot_radius_m: 0.175
+minimum_clearance_m: 0.55
+goal_tolerance_m: 0.3
+yaw_tolerance_rad: 0.3
+regions:
+- id: A
+  name: Khu vực A — Tây Bắc
+  aliases:
+  - a
+  - ây
+  - â
+  - khu vực a
+  - khu a
+  - phía tây bắc
+  - tây bắc
+  polygon:
+  - - -10
+    - 0
+  - - 0
+    - 0
+  - - 0
+    - 10.05
+  - - -10
+    - 10.05
+  label: 1
+  goal:
+    x: -3.5249999999999995
+    y: 2.9750000000000014
+    yaw: 0.0
+  goal_pixel:
+  - 129
+  - 141
+  clearance_m: 1.6918925046920776
+  free_cells: 30634
+- id: B
+  name: Khu vực B — Tây Nam
+  aliases:
+  - b
+  - bê
+  - bi
+  - khu vực b
+  - khu b
+  - phía tây nam
+  - tây nam
+  polygon:
+  - - -10
+    - -10
+  - - 0
+    - -10
+  - - 0
+    - 0
+  - - -10
+    - 0
+  label: 2
+  goal:
+    x: -3.5249999999999995
+    y: -3.375
+    yaw: 0.0
+  goal_pixel:
+  - 129
+  - 268
+  clearance_m: 0.550000011920929
+  free_cells: 30590
+- id: C
+  name: Khu vực C — Phía Đông
+  aliases:
+  - c
+  - xê
+  - xi
+  - khu vực c
+  - khu c
+  - phía đông
+  polygon:
+  - - 0
+    - -10
+  - - 10.05
+    - -10
+  - - 10.05
+    - 10.05
+  - - 0
+    - 10.05
+  label: 3
+  goal:
+    x: 4.625
+    y: -0.5250000000000004
+    yaw: 0.0
+  goal_pixel:
+  - 292
+  - 211
+  clearance_m: 0.550000011920929
+  free_cells: 49924

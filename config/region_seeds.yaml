@@ -1,0 +1,21 @@
+# Manual semantic polygons, clipped to the largest connected free component.
+# Goals are selected near these anchors with >= 0.55 m clearance.
+frame_id: map
+robot_radius_m: 0.175
+minimum_clearance_m: 0.55
+regions:
+- id: A
+  name: Khu vực A — Tây Bắc
+  aliases: [a, ây, â, "khu vực a", "khu a", "phía tây bắc", "tây bắc"]
+  polygon: [[-10, 0], [0, 0], [0, 10.05], [-10, 10.05]]
+  anchor: [-3.5, 3.0]
+- id: B
+  name: Khu vực B — Tây Nam
+  aliases: [b, bê, bi, "khu vực b", "khu b", "phía tây nam", "tây nam"]
+  polygon: [[-10, -10], [0, -10], [0, 0], [-10, 0]]
+  anchor: [-3.5, -4.0]
+- id: C
+  name: Khu vực C — Phía Đông
+  aliases: [c, xê, xi, "khu vực c", "khu c", "phía đông"]
+  polygon: [[0, -10], [10.05, -10], [10.05, 10.05], [0, 10.05]]
+  anchor: [4.5, 0.0]

@@ -1,0 +1,10 @@
+{
+  "watershed_seed_components": 41,
+  "manual_regions": 3,
+  "unlabelled_free_cells": 257,
+  "free_cells": 111405,
+  "unknown_cells": 42778,
+  "occupied_cells": 6618,
+  "labels_sha256": "0d1aa0abc080901e882e1a8f385eb3b72aaa4b16c810a49437f0c2c08874527f",
+  "decision": "Manual semantic regions retained; automatic maxima oversegment connected maze corridors."
+}
