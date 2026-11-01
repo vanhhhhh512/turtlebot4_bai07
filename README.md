@@ -54,17 +54,17 @@ source install/setup.bash
 
 Chọn đúng source micro trong `config/speech.yaml` bằng `pactl list short sources`; không chọn đuôi `.monitor`. Bản cấu hình laptop dùng `alsa_input.pci-0000_05_00.6.analog-stereo`. Chỉnh gain bằng Settings → Sound; giảm nếu panel báo clipping. Script không tự đổi âm lượng hệ thống.
 
-Mở mọi cửa sổ bằng một lệnh:
+Mở mô phỏng và tự quay WebM bằng một lệnh:
 
 ```bash
 BAI07_UNDERLAY=~/bai07_underlay \
-  ~/bai07_ws/src/bai07_turtlebot4/scripts/run_demo.sh \
+  python3 ~/bai07_ws/src/bai07_turtlebot4/scripts/demo_session.py \
   asr_python:=$HOME/.venvs/bai07-asr/bin/python
 ```
 
 Nếu dùng Python ASR đã cài sẵn ở user/system, bỏ argument `asr_python`. Script tạo run mới, lưu `session.env`, mở Gazebo bên phải trên, transcript bên phải dưới và RViz bên trái. Cần mở khóa màn hình. Chờ `READY` của robot và ASR. Node chuẩn bị kích hoạt controller, undock rồi khởi tạo AMCL một lần từ spawn (0,0,0) + odom. Navigation tiếp tục dùng AMCL/scan/map/TF; ground truth không dùng làm đầu vào.
 
-Mặc định ROS domain **97**, partition Ignition mới mỗi phiên. Script dùng Cyclone DDS với discovery localhost theo `config/cyclonedds.xml`; `session.env` lưu cả cấu hình DDS cho terminal kiểm tra. Kiểm tra phiên khác trước khi chạy, đổi bằng `BAI07_ROS_DOMAIN_ID`/`BAI07_IGN_PARTITION` nếu trùng. Ctrl+C ở terminal launch đóng đúng phiên đó. Không dùng lệnh kill rộng.
+Mặc định ROS domain **97**, partition Ignition mới mỗi phiên. Script dùng Cyclone DDS với discovery localhost theo `config/cyclonedds.xml`; `session.env` lưu cả cấu hình DDS cho terminal kiểm tra. Kiểm tra phiên khác trước khi chạy, đổi bằng `BAI07_ROS_DOMAIN_ID`/`BAI07_IGN_PARTITION` nếu trùng. Script đợi robot IDLE/READY, ASR READY và đủ ba cửa sổ rồi tự ghi WebM có tiếng micro. Mặc định video ở thư mục run; đặt `BAI07_RECORD_OUTPUT=/duong/dan/video.webm` nếu cần. Chờ dòng `ĐANG QUAY WEBM + GHI ÂM MICRO` rồi mới nói. Ctrl+C một lần đóng/kiểm tra video trước, sau đó dừng đúng phiên mô phỏng. Không đóng Gazebo/RViz hoặc thu nhỏ cửa sổ giữa lúc quay. Không dùng lệnh kill rộng. Muốn chỉ chạy mô phỏng mà không quay, dùng `bash scripts/run_demo.sh` thay cho `demo_session.py`.
 
 ## Nói và quan sát
 
@@ -106,15 +106,17 @@ python3 -m unittest discover -s ~/bai07_ws/src/bai07_turtlebot4/tests -v
 
 Mỗi run lưu WAV, `speech.jsonl`, `navigation.jsonl`, `trajectory.csv` và log launch. `sensors/` lưu laser, snapshot costmap và ground truth chỉ để đối chiếu nghiệm thu; recorder này không gửi pose/goal/vận tốc. Chuỗi ID nối audio → transcript → command → UUID action → result. ASR `small`, language `vi`, task `transcribe`; thu PCM mono 16 kHz bằng `parec`, bỏ transient mở mic, highpass 100 Hz, ngưỡng năng lượng theo nền, chuẩn hóa mức âm ASR và gợi ý từ vựng khu vực A/B/C, kiểm tra clipping/no-speech/logprob/compression trước khi phát câu cuối. ASR chạy worker riêng và chỉ nhận một câu mỗi lần bấm.
 
-Quay video ở terminal thứ hai (script từ chối màn hình khóa, không ghi đè video cũ):
+Lệnh `demo_session.py` bên trên đã gộp quay tự động, không cần terminal thứ hai. Video dùng **WebM/VP8 + Opus**, 12 fps, ghép ba cửa sổ RViz/Gazebo/transcript và micro PulseAudio (highpass 100 Hz, gain audio mặc định 8 cho giọng nhỏ). FFmpeg và recorder nằm ở process session riêng; Ctrl+C được điều phối để đóng container trước khi dừng Gazebo. Mỗi video có `.webm.log` và `.webm.json`, gồm metadata và kết quả giải mã hình/âm thanh.
+
+Nếu chỉ muốn quay riêng một phiên đang mở:
 
 ```bash
-source ~/bai07_ws/install/setup.bash
-source /duong/dan/run/session.env
-python3 ~/bai07_ws/src/bai07_turtlebot4/scripts/record_demo.py "$BAI07_RUN/demo_microphone.mp4"
+python3 ~/bai07_ws/src/bai07_turtlebot4/scripts/record_demo.py /duong/dan/demo.webm
 ```
 
-Video thu trực tiếp nội dung ba cửa sổ RViz/Gazebo/transcript và micro PulseAudio (highpass 100 Hz, gain audio mặc định 8 cho giọng nhỏ); Ctrl+C để chốt MP4. Nói A/B/C, sau C nói A→B, cuối cùng nói Z. Chờ robot hoàn thành từng task; không dùng teleop hay gõ text thay câu nói. Có thể dùng OBS nếu cần layout/nguồn âm khác. Chỉ công bố video sau khi xem và kiểm tra tiếng/hình.
+Recorder chờ đủ cửa sổ (mặc định 120 giây), báo rõ cửa sổ còn thiếu, từ chối màn hình khóa/video trùng tên. `--check --wait-seconds 0` chỉ kiểm tra cửa sổ, không mở micro. Dùng FFmpeg có `libvpx` và `libopus`; nếu không có binary hệ thống thì có thể dùng binary từ `imageio-ffmpeg` đã cài trong Python chạy recorder.
+
+Nói A/B/C, sau C nói A→B, cuối cùng nói Z. Chờ robot hoàn thành từng task; không dùng teleop hay gõ text thay câu nói. Chỉ công bố video sau khi xem và kiểm tra tiếng/hình. Các clip test định dạng không thay thế video nghiệm thu đầy đủ.
 
 ## Kiểm tra bằng text và vật cản
 
