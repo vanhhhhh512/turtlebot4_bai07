@@ -71,7 +71,7 @@ try:
             data=json.dumps(
                 dict(
                     utterance_id=uid,
-                    text="Di chuyển từ khu vực A đến khu vực B",
+                    text="Di chuyển từ khu 1 đến khu 2",
                     created_at=time.time(),
                     source="text_test",
                 )
@@ -86,7 +86,7 @@ try:
         if any(d["event"] == "CHAIN_STOPPED" for d in ds):
             break
         time.sleep(0.1)
-    assert len(seen) == 1, "B must not be sent after A aborts"
+    assert len(seen) == 1, "2 must not be sent after 1 aborts"
     assert any(d["event"] == "GOAL_RESULT" and d["status"] == 6 for d in ds)
     result = dict(
         source="synthetic ROS action server; no simulation and no microphone",

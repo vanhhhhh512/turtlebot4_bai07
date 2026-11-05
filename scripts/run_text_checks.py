@@ -61,11 +61,11 @@ try:
     while time.monotonic() - start < 2:
         rclpy.spin_once(n, timeout_sec=0.1)
     for text in [
-        "Đi đến khu vực Z",
-        "Di chuyển từ khu vực A đến khu vực Z",
-        "Di chuyển từ khu vực Z đến khu vực B",
+        "Đi đến khu 4",
+        "Di chuyển từ khu 1 đến khu 4",
+        "Di chuyển từ khu 4 đến khu 2",
         "Xin chào",
-        "Đi đến A và B",
+        "Đi đến 1 và 2",
     ]:
         before = len(received)
         cmd = send(text)
@@ -82,9 +82,9 @@ try:
             )
         )
     for text in [
-        "Đi đến khu vực B",
-        "Đi đến khu vực C",
-        "Di chuyển từ khu vực A đến khu vực B",
+        "Đi đến khu 2",
+        "Đi đến khu 3",
+        "Di chuyển từ khu 1 đến khu 2",
     ]:
         before = len(received)
         cmd = send(text)
@@ -96,9 +96,9 @@ try:
             ),
             10,
         )
-        if text == "Đi đến khu vực B":
+        if text == "Đi đến khu 2":
             pub.publish(String(data=json.dumps(cmd, ensure_ascii=False)))
-            send("Đi đến khu vực A")
+            send("Đi đến khu 1")
         wait(
             lambda: any(
                 d["event"] in ("COMMAND_SUCCEEDED", "CHAIN_STOPPED")

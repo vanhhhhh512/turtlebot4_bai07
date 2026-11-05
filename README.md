@@ -1,6 +1,6 @@
 # TurtleBot 4 — Bài thực hành 7
 
-Phân vùng map maze thành A/B/C, nhận câu tiếng Việt từ micro laptop và gửi `NavigateToPose` cho Nav2. Sinh viên: Đỗ Việt Anh — 23020719 — K68E-RE.
+Phân vùng map maze thành 1/2/3, nhận câu tiếng Việt từ micro laptop và gửi `NavigateToPose` cho Nav2. Sinh viên: Đỗ Việt Anh — 23020719 — K68E-RE.
 
 ## Môi trường
 
@@ -72,14 +72,14 @@ Bấm **Nghe một câu**, đợi dòng **Nói câu lệnh…**, nói rồi ng�
 
 | Câu nói | Task |
 | --- | --- |
-| Đi đến khu vực A | Tây Bắc |
-| Đi đến khu vực B | Tây Nam |
-| Đi đến khu vực C | Phía Đông |
-| Di chuyển từ khu vực A đến khu vực B | Đến A thành công rồi mới gửi B |
-| Đi đến khu vực Z | Báo không tồn tại; không gửi goal |
-| Di chuyển từ khu vực A đến khu vực Z | Từ chối toàn câu, không đi đến A |
+| Đi đến khu 1 | Tây Bắc |
+| Đi đến khu 2 | Tây Nam |
+| Đi đến khu 3 | Phía Đông |
+| Di chuyển từ khu 1 đến khu 2 | Đến 1 thành công rồi mới gửi 2 |
+| Đi đến khu 4 | Báo không tồn tại; không gửi goal |
+| Di chuyển từ khu 1 đến khu 4 | Từ chối toàn câu, không đi đến 1 |
 
-Có alias “phía tây bắc”, “phía tây nam”, “phía đông”, và cách đọc chữ “bê”, “xê”. Alias ASR “ái” được đăng ký rõ cho A sau lượt micro; parser vẫn tra alias chính xác, không fuzzy-match tên lạ. Không gán tên phòng cho các vùng vị trí này. Khi đang chạy, câu đi mới báo BUSY. Cùng utterance ID chỉ được xử lý một lần. Nút **Hủy task** gửi action cancellation, chờ result trước khi cho task mới. Im lặng sau câu đã nhận không hủy task. Mất microphone/ASR thật, mất sensor/TF, hazard nguy hiểm hoặc timeout làm hủy chuỗi; không tự gửi tiếp B hoặc tự thử lại.
+Parser nhận cả chữ số và chữ tiếng Việt: “khu 1/khu một”, “khu 2/khu hai”, “khu 3/khu ba”; có thể nói “khu vực số hai”. ID nội bộ cũng là chuỗi "1", "2", "3", không dùng chữ cái. Tên cũ không còn là alias điều khiển. Parser tra alias chính xác, không fuzzy-match tên lạ; số 4/bốn hoặc tên ngoài cấu hình bị từ chối. Không gán tên phòng cho các vùng vị trí này. Khi đang chạy, câu đi mới báo BUSY. Cùng utterance ID chỉ xử lý một lần. Nút **Hủy task** gửi cancellation và chờ result trước task mới. Mất microphone/ASR, sensor/TF, hazard nguy hiểm hoặc timeout hủy chuỗi; không tự gửi goal kế tiếp hoặc tự thử lại.
 
 Vận tốc và tránh vật cản do Nav2 xử lý. Mỗi goal cần status `SUCCEEDED`, sai số vị trí ≤0,30 m, góc ≤0,30 rad và pose cuối thuộc đúng mask vùng. Nav2 goal checker dùng 0,25 m/rad. BACKUP_LIMIT=0 sau undock không được tính thành bump; BUMP/CLIFF/STALL/WHEEL_DROP được ghi và hủy task.
 
@@ -87,7 +87,7 @@ Vận tốc và tránh vật cản do Nav2 xử lý. Mỗi goal cần status `SU
 
 `maps/map.yaml`/`map.pgm` giữ nguyên byte Bài 04. Navigation dùng `config/map_navigation.yaml` với `free_thresh=0.196`, nên gray 205 là **unknown**. Grid chạy thật được so khớp với mask phân vùng. Map: 401×401, 0,05 m/pixel, origin [-10,-10,0].
 
-Phương pháp cuối: polygon thủ công trong `config/region_seeds.yaml`, cắt với thành phần free lớn nhất. A: x<0,y≥0; B: x<0,y<0; C: x≥0. 257 ô free nhỏ không gán nhãn; tường/unknown không có nhãn. Các vùng không phải connected components của phòng. Thử seed distance-transform/watershed tạo 41 seed nên không chọn kết quả đó.
+Phương pháp cuối: polygon thủ công trong `config/region_seeds.yaml`, cắt với thành phần free lớn nhất. 1: x<0,y≥0; 2: x<0,y<0; 3: x≥0. 257 ô free nhỏ không gán nhãn; tường/unknown không có nhãn. Các vùng không phải connected components của phòng. Thử seed distance-transform/watershed tạo 41 seed nên không chọn kết quả đó.
 
 ```bash
 python3 ~/bai07_ws/src/bai07_turtlebot4/bai07_turtlebot4/map_segmentation.py
@@ -96,15 +96,15 @@ python3 -m unittest discover -s ~/bai07_ws/src/bai07_turtlebot4/tests -v
 
 | Vùng | Goal (x,y,yaw) | Clearance map |
 | --- | --- | --- |
-| A | (-3.525, 2.975, 0) | 1.692 m |
-| B | (-3.525, -3.375, 0) | 0.550 m |
-| C | (4.625, -0.525, 0) | 0.550 m |
+| 1 | (-3.525, 2.975, 0) | 1.692 m |
+| 2 | (-3.525, -3.375, 0) | 0.550 m |
+| 3 | (4.625, -0.525, 0) | 0.550 m |
 
 Đổi tâm pixel: qx=(u+0,5)r; qy=(H-v-0,5)r; rồi xoay theo yaw origin và cộng origin. Lưu mask riêng `maps/region_labels.npy`; ảnh `maps/regions.png` chỉ minh họa, không đưa vào map server. Robot radius cấu hình 0,175 m.
 
 ## Ghi log và quay demo thật
 
-Mỗi run lưu WAV, `speech.jsonl`, `navigation.jsonl`, `trajectory.csv` và log launch. `sensors/` lưu laser, snapshot costmap và ground truth chỉ để đối chiếu nghiệm thu; recorder này không gửi pose/goal/vận tốc. Chuỗi ID nối audio → transcript → command → UUID action → result. ASR `small`, language `vi`, task `transcribe`; thu PCM mono 16 kHz bằng `parec`, bỏ transient mở mic, highpass 100 Hz, ngưỡng năng lượng theo nền, chuẩn hóa mức âm ASR và gợi ý từ vựng khu vực A/B/C, kiểm tra clipping/no-speech/logprob/compression trước khi phát câu cuối. ASR chạy worker riêng và chỉ nhận một câu mỗi lần bấm.
+Mỗi run lưu WAV, `speech.jsonl`, `navigation.jsonl`, `trajectory.csv` và log launch. `sensors/` lưu laser, snapshot costmap và ground truth chỉ để đối chiếu nghiệm thu; recorder này không gửi pose/goal/vận tốc. Chuỗi ID nối audio → transcript → command → UUID action → result. ASR `small`, language `vi`, task `transcribe`; thu PCM mono 16 kHz bằng `parec`, bỏ transient mở mic, highpass 100 Hz, ngưỡng năng lượng theo nền, chuẩn hóa mức âm ASR và gợi ý từ vựng khu 1/2/3, kiểm tra clipping/no-speech/logprob/compression trước khi phát câu cuối. ASR chạy worker riêng và chỉ nhận một câu mỗi lần bấm.
 
 Lệnh `demo_session.py` bên trên đã gộp quay tự động, không cần terminal thứ hai. Video dùng **WebM/VP8 + Opus**, 12 fps, ghép ba cửa sổ RViz/Gazebo/transcript và micro PulseAudio (highpass 100 Hz, gain audio mặc định 8 cho giọng nhỏ). FFmpeg và recorder nằm ở process session riêng; Ctrl+C được điều phối để đóng container trước khi dừng Gazebo. Mỗi video có `.webm.log` và `.webm.json`, gồm metadata và kết quả giải mã hình/âm thanh.
 
@@ -116,7 +116,7 @@ python3 ~/bai07_ws/src/bai07_turtlebot4/scripts/record_demo.py /duong/dan/demo.w
 
 Recorder chờ đủ cửa sổ (mặc định 120 giây), báo rõ cửa sổ còn thiếu, từ chối màn hình khóa/video trùng tên. `--check --wait-seconds 0` chỉ kiểm tra cửa sổ, không mở micro. Dùng FFmpeg có `libvpx` và `libopus`; nếu không có binary hệ thống thì có thể dùng binary từ `imageio-ffmpeg` đã cài trong Python chạy recorder.
 
-Nói A/B/C, sau C nói A→B, cuối cùng nói Z. Chờ robot hoàn thành từng task; không dùng teleop hay gõ text thay câu nói. Chỉ công bố video sau khi xem và kiểm tra tiếng/hình. Các clip test định dạng không thay thế video nghiệm thu đầy đủ.
+Nói 1/2/3, sau 3 nói 1→2, cuối cùng nói 4. Chờ robot hoàn thành từng task; không dùng teleop hay gõ text thay câu nói. Chỉ công bố video sau khi xem và kiểm tra tiếng/hình. Các clip test định dạng không thay thế video nghiệm thu đầy đủ.
 
 ## Kiểm tra bằng text và vật cản
 
@@ -125,7 +125,7 @@ Các script dưới đây là **đầu vào thử**, không chứng minh ASR/mic
 ```bash
 source ~/bai07_ws/install/setup.bash
 source /duong/dan/run/session.env
-python3 ~/bai07_ws/src/bai07_turtlebot4/scripts/send_text_test.py 'Đi đến khu vực A'
+python3 ~/bai07_ws/src/bai07_turtlebot4/scripts/send_text_test.py 'Đi đến khu 1'
 python3 ~/bai07_ws/src/bai07_turtlebot4/scripts/run_text_checks.py --output "$BAI07_RUN/text_checks.json"
 ```
 
@@ -139,4 +139,4 @@ Topic: `/recognized_text` (String JSON: `utterance_id`, `text`, `created_at` Uni
 
 `map_segmentation.py` tạo vùng/goal; `speech_recognition_node.py` thu/ASR; `command_parser.py` lấy nguồn/đích; `voice_navigation_node.py` quản lý action; `semantic_map_node.py` hiển thị vùng; `prepare_robot.py` undock/initial pose; `demo_panel.py` hiển thị transcript live.
 
-Đã chạy navigation thật bằng text cho A/B/C và C→A→B. Phần micro tiếng Việt và video cuối chỉ được ghi đạt khi có người nói thật và lưu đủ evidence. Repo không chứa báo cáo, log, WAV, video hoặc model. Chưa có URL video Bài 07 được xác minh.
+Bản ngày 05/11/2026 đã đổi tên và ID thành 1/2/3 để giảm nhầm âm chữ cái. Bản đồ, mask và tọa độ đích giữ nguyên; dữ liệu thử trước ngày đổi vẫn lưu nguyên nhãn gốc trong các run local, không sửa transcript hay diễn giải thành đã thử tên mới. Parser số/chữ và chuỗi đã được kiểm tra; micro tiếng Việt với tên mới và demo cuối cần được nghiệm thu bằng bằng chứng mới. Repo không chứa báo cáo/log/WAV/video/model. Chưa có URL video cuối Bài 07 được xác minh.

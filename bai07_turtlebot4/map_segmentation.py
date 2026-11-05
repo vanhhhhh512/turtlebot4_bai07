@@ -154,9 +154,11 @@ def generate(root):
     for reg in regions:
         x, y = reg["goal"]["x"], reg["goal"]["y"]
         ax.plot(x, y, "k*", ms=12)
-        ax.text(x + 0.35, y + 0.35, reg["id"], weight="bold", fontsize=14)
+        ax.text(x + 0.35, y + 0.35, reg["name"], weight="bold", fontsize=14)
     ax.set(
-        xlabel="x (m)", ylabel="y (m)", title="A: Tay Bac | B: Tay Nam | C: Phia Dong"
+        xlabel="x (m)",
+        ylabel="y (m)",
+        title="Khu 1: Tây Bắc | Khu 2: Tây Nam | Khu 3: Phía Đông",
     )
     ax.set_aspect("equal")
     fig.tight_layout()

@@ -40,7 +40,7 @@ def far_route():
     first = max(
         regions, key=lambda r: math.hypot(r["goal"]["x"] - tr.x, r["goal"]["y"] - tr.y)
     )["id"]
-    second = "B" if first == "A" else "A"
+    second = "2" if first == "1" else "1"
     return first, second
 
 
@@ -115,7 +115,7 @@ try:
     lifecycle("lifecycle_manager_navigation", 1)
     uid = "nav2_paused_" + uuid.uuid4().hex
     before = len(events())
-    send("Di chuyển từ khu vực A đến khu vực B", uid)
+    send("Di chuyển từ khu 1 đến khu 2", uid)
     wait(
         lambda: terminal(uid)
         or any(
@@ -124,7 +124,7 @@ try:
         )
     )
     ds = events()[before:]
-    assert not any(d["event"] == "GOAL_SENT" and d.get("region") == "B" for d in ds)
+    assert not any(d["event"] == "GOAL_SENT" and d.get("region") == "2" for d in ds)
     save(
         "Nav2 paused/rejection",
         pass_check=True,
@@ -134,7 +134,7 @@ try:
     spin(3)
     first, second = far_route()
     uid = "amcl_loss_" + uuid.uuid4().hex
-    send(f"Di chuyển từ khu vực {first} đến khu vực {second}", uid)
+    send(f"Di chuyển từ khu {first} đến khu {second}", uid)
     wait(
         lambda: any(
             d["event"] == "GOAL_ACCEPTED" and d.get("command_id") == uid
@@ -187,7 +187,7 @@ try:
     spin(3)
     first, second = far_route()
     uid = "mic_process_loss_" + uuid.uuid4().hex
-    send(f"Di chuyển từ khu vực {first} đến khu vực {second}", uid)
+    send(f"Di chuyển từ khu {first} đến khu {second}", uid)
     wait(
         lambda: any(
             d["event"] == "GOAL_ACCEPTED" and d.get("command_id") == uid

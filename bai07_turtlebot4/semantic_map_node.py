@@ -59,7 +59,7 @@ class SemanticMap(Node):
             text.pose.position.x = r["goal"]["x"]
             text.pose.position.y = r["goal"]["y"]
             text.pose.position.z = 0.5
-            text.text = "Khu " + r["id"]
+            text.text = r["name"]
             text.scale.z = 0.5
             text.color.a = 1.0
             arr.markers.append(text)

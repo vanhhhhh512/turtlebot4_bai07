@@ -481,7 +481,7 @@ class VoiceNavigation(Node):
             )
         except Exception as exc:
             self.event("CANCEL_ERROR", error=str(exc))
-        # Keep BUSY until terminal result. Never dispatch B on cancellation or a timeout.
+        # Keep BUSY until terminal result. Never dispatch the next goal on cancellation or a timeout.
 
     def tick(self):
         ready, reason = self.ready()

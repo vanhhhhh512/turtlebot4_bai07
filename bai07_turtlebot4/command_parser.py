@@ -32,7 +32,7 @@ class CommandParser:
     def resolve(self, name):
         name = name.strip()
         if name not in self.aliases:
-            # Spoken letters are accepted only inside a complete region phrase.
+            # Match only explicitly registered region names/numbers; never fuzzy-match.
             short = re.sub(r"^(khu vuc|khu) ", "", name)
             if short not in self.aliases:
                 raise ValueError("Khu vực không tồn tại: " + name)
@@ -40,6 +40,8 @@ class CommandParser:
         return self.aliases[name]
 
     def parse(self, text):
+        if re.search(r"[-−]\s*\d", text):
+            raise ValueError("Khu vực không tồn tại: số âm")
         s = normalize(text)
         if len(s) > 240:
             raise ValueError("Câu lệnh quá dài")
@@ -49,4 +51,4 @@ class CommandParser:
         single = re.fullmatch(r"(?:di den|di chuyen den|den) (.+)", s)
         if single:
             return Command(s, (self.resolve(single.group(1)),))
-        raise ValueError("Câu lệnh chưa đúng: nói Đi đến khu vực A/B/C")
+        raise ValueError("Câu lệnh chưa đúng: nói Đi đến khu 1, khu 2 hoặc khu 3")

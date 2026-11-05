@@ -7,17 +7,21 @@ minimum_clearance_m: 0.55
 goal_tolerance_m: 0.3
 yaw_tolerance_rad: 0.3
 regions:
-- id: A
-  name: Khu vực A — Tây Bắc
+- id: '1'
+  name: Khu 1
   aliases:
-  - a
-  - ây
-  - â
-  - khu vực a
-  - khu a
-  - phía tây bắc
-  - tây bắc
-  - ái
+  - '1'
+  - một
+  - khu 1
+  - khu một
+  - khu vực 1
+  - khu vực một
+  - số 1
+  - số một
+  - khu số 1
+  - khu số một
+  - khu vực số 1
+  - khu vực số một
   polygon:
   - - -10
     - 0
@@ -37,16 +41,21 @@ regions:
   - 141
   clearance_m: 1.6918925046920776
   free_cells: 30634
-- id: B
-  name: Khu vực B — Tây Nam
+- id: '2'
+  name: Khu 2
   aliases:
-  - b
-  - bê
-  - bi
-  - khu vực b
-  - khu b
-  - phía tây nam
-  - tây nam
+  - '2'
+  - hai
+  - khu 2
+  - khu hai
+  - khu vực 2
+  - khu vực hai
+  - số 2
+  - số hai
+  - khu số 2
+  - khu số hai
+  - khu vực số 2
+  - khu vực số hai
   polygon:
   - - -10
     - -10
@@ -66,15 +75,21 @@ regions:
   - 268
   clearance_m: 0.550000011920929
   free_cells: 30590
-- id: C
-  name: Khu vực C — Phía Đông
+- id: '3'
+  name: Khu 3
   aliases:
-  - c
-  - xê
-  - xi
-  - khu vực c
-  - khu c
-  - phía đông
+  - '3'
+  - ba
+  - khu 3
+  - khu ba
+  - khu vực 3
+  - khu vực ba
+  - số 3
+  - số ba
+  - khu số 3
+  - khu số ba
+  - khu vực số 3
+  - khu vực số ba
   polygon:
   - - 0
     - -10

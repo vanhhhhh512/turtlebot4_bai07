@@ -26,7 +26,9 @@ class Panel(Node):
         self.mic = tk.StringVar(value="Đang đợi ASR…")
         self.heard = tk.StringVar(value="Chưa có câu nói")
         self.robot = tk.StringVar(value="Đợi Nav2/AMCL…")
-        self.route = tk.StringVar(value="A: Tây Bắc    B: Tây Nam    C: Phía Đông")
+        self.route = tk.StringVar(
+            value="Khu 1: Tây Bắc    Khu 2: Tây Nam    Khu 3: Phía Đông"
+        )
         for variable, size in [
             (self.mic, 11),
             (self.heard, 16),
@@ -60,7 +62,7 @@ class Panel(Node):
         ).pack(side="left", padx=8)
         tk.Label(
             self.root,
-            text="“Đi đến khu vực A/B/C”\n“Di chuyển từ khu vực A đến khu vực B”\n“Đi đến khu vực Z” → báo lỗi",
+            text="“Đi đến khu 1 / khu 2 / khu 3”\n“Di chuyển từ khu 1 đến khu 2”\n“Đi đến khu 4” → báo lỗi",
             font=("DejaVu Sans", 11),
             bg="#edf2f7",
             justify="left",
@@ -105,15 +107,15 @@ class Panel(Node):
         if e == "HEARTBEAT":
             self.robot.set(
                 f"{d['state']} · {d['reason']}"
-                + (f" · đích {d['region']}" if d.get("region") else "")
+                + (f" · đích Khu {d['region']}" if d.get("region") else "")
             )
         elif e == "PARSED":
-            self.route.set("Task: " + " → ".join(d["route"]))
+            self.route.set("Task: " + " → ".join("Khu " + r for r in d["route"]))
         elif e == "INVALID_COMMAND":
             self.add("Lỗi: " + d["error"])
         elif e == "GOAL_RESULT":
             self.add(
-                f"Đích {d['region']}: status {d['status']}, sai số {d['error_m']} m"
+                f"Đích Khu {d['region']}: status {d['status']}, sai số {d['error_m']} m"
             )
         elif e in (
             "COMMAND_SUCCEEDED",
