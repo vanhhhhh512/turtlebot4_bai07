@@ -13,9 +13,6 @@ sudo apt install ros-humble-turtlebot4-simulator ros-humble-turtlebot4-navigatio
   python3-colcon-common-extensions python3-opencv python3-numpy python3-scipy \
   python3-yaml python3-matplotlib python3-tk python3-venv pulseaudio-utils xdotool ffmpeg
 ```
-
-Các lượt kiểm tra dùng Create 3 simulation overrides từ [Bài 04](https://github.com/vanhhhhh512/turtlebot4_bai04), commit `9f2e4143fcf0caddd72a630accf6f99a6bf37cc5`. Giữ dependency này ngoài repo Bài 07:
-
 ```bash
 mkdir -p ~/bai07_underlay/src
 cd ~/bai07_underlay/src
