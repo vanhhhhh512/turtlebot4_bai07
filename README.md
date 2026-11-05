@@ -139,4 +139,16 @@ Topic: `/recognized_text` (String JSON: `utterance_id`, `text`, `created_at` Uni
 
 `map_segmentation.py` tạo vùng/goal; `speech_recognition_node.py` thu/ASR; `command_parser.py` lấy nguồn/đích; `voice_navigation_node.py` quản lý action; `semantic_map_node.py` hiển thị vùng; `prepare_robot.py` undock/initial pose; `demo_panel.py` hiển thị transcript live.
 
-Bản ngày 05/11/2026 đã đổi tên và ID thành 1/2/3 để giảm nhầm âm chữ cái. Bản đồ, mask và tọa độ đích giữ nguyên; dữ liệu thử trước ngày đổi vẫn lưu nguyên nhãn gốc trong các run local, không sửa transcript hay diễn giải thành đã thử tên mới. Parser số/chữ và chuỗi đã được kiểm tra; micro tiếng Việt với tên mới và demo cuối cần được nghiệm thu bằng bằng chứng mới. Repo không chứa báo cáo/log/WAV/video/model. Chưa có URL video cuối Bài 07 được xác minh.
+Bản ngày 05/11/2026 dùng tên và ID **1/2/3**. Demo micro cùng ngày đã kiểm tra trên TurtleBot 4 Simulation:
+
+| Câu nói nhận được | Kết quả đo |
+| --- | --- |
+| Đi đến khu vực Một. | Khu 1 SUCCEEDED, sai số cuối 0,2305 m |
+| Đi đến khu vực 2. | Khu 2 SUCCEEDED, sai số cuối 0,2280 m |
+| Đi đến khu vực ba. | Khu 3 SUCCEEDED, sai số cuối 0,2297 m |
+| Đi từ khu vực 1 đến khu vực 2. | Bắt đầu trong Khu 3; Khu 1 SUCCEEDED rồi mới gửi Khu 2; cả hai thành công, sai số 0,2313/0,2301 m |
+| Đi đến khu vực bốn. / năm. | INVALID_COMMAND, không gửi goal cho từng câu |
+
+Demo gốc `demo_microphone_20261105_091649_17470.webm` dài 5 phút 07,30 giây; kiểm tra giải mã toàn bộ hình/âm thanh và đối chiếu transcript/action/pose/log. Có thêm một lượt NO_SPEECH và một task Khu 1 do người dùng hủy, được giữ nguyên trong bằng chứng và không tính là task đến đích thành công. ASR của 7 câu có transcript mất 0,658–0,918 s (riêng suy luận, chưa gồm chờ/thu câu), không phải phép đo accuracy tổng quát. Log không có hazard nguy hiểm; không nhận được message CONTACTS nên chưa xác minh đầy đủ kênh contact. Lượt demo này không thêm vật cản động mới; Nav2 dùng scan/costmap cho maze.
+
+Tên chữ cái trong log cũ vẫn giữ nguyên, không sửa lịch sử thành bằng chứng tên số. Repo chỉ chứa source/config/map và README; PDF/LaTeX/ZIP/log/WAV/video/model giữ ngoài git. Chưa có URL video công khai được xác minh; tên file trên là video kèm bản nộp, không phải đường dẫn download từ repo.
