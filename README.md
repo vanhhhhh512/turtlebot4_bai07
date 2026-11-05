@@ -1,6 +1,6 @@
 # TurtleBot 4 — Bài thực hành 7
 
-Phân vùng map maze thành 1/2/3, nhận câu tiếng Việt từ micro laptop và gửi `NavigateToPose` cho Nav2. Sinh viên: Đỗ Việt Anh — 23020719 — K68E-RE.
+Phân vùng map maze thành 1/2/3, nhận câu tiếng Việt từ micro laptop và gửi `NavigateToPose` cho Nav2.
 
 ## Môi trường
 
@@ -54,17 +54,7 @@ source install/setup.bash
 
 Chọn đúng source micro trong `config/speech.yaml` bằng `pactl list short sources`; không chọn đuôi `.monitor`. Bản cấu hình laptop dùng `alsa_input.pci-0000_05_00.6.analog-stereo`. Chỉnh gain bằng Settings → Sound; giảm nếu panel báo clipping. Script không tự đổi âm lượng hệ thống.
 
-Mở mô phỏng và tự quay WebM bằng một lệnh:
-
-```bash
-BAI07_UNDERLAY=~/bai07_underlay \
-  python3 ~/bai07_ws/src/bai07_turtlebot4/scripts/demo_session.py \
-  asr_python:=$HOME/.venvs/bai07-asr/bin/python
 ```
-
-Nếu dùng Python ASR đã cài sẵn ở user/system, bỏ argument `asr_python`. Script tạo run mới, lưu `session.env`, mở Gazebo bên phải trên, transcript bên phải dưới và RViz bên trái. Cần mở khóa màn hình. Chờ `READY` của robot và ASR. Node chuẩn bị kích hoạt controller, undock rồi khởi tạo AMCL một lần từ spawn (0,0,0) + odom. Navigation tiếp tục dùng AMCL/scan/map/TF; ground truth không dùng làm đầu vào.
-
-Mặc định ROS domain **97**, partition Ignition mới mỗi phiên. Script dùng Cyclone DDS với discovery localhost theo `config/cyclonedds.xml`; `session.env` lưu cả cấu hình DDS cho terminal kiểm tra. Kiểm tra phiên khác trước khi chạy, đổi bằng `BAI07_ROS_DOMAIN_ID`/`BAI07_IGN_PARTITION` nếu trùng. Script đợi robot IDLE/READY, ASR READY và đủ ba cửa sổ rồi tự ghi WebM có tiếng micro. Mặc định video ở thư mục run; đặt `BAI07_RECORD_OUTPUT=/duong/dan/video.webm` nếu cần. Chờ dòng `ĐANG QUAY WEBM + GHI ÂM MICRO` rồi mới nói. Ctrl+C một lần đóng/kiểm tra video trước, sau đó dừng đúng phiên mô phỏng. Không đóng Gazebo/RViz hoặc thu nhỏ cửa sổ giữa lúc quay. Không dùng lệnh kill rộng. Muốn chỉ chạy mô phỏng mà không quay, dùng `bash scripts/run_demo.sh` thay cho `demo_session.py`.
 
 ## Nói và quan sát
 
@@ -83,15 +73,6 @@ Parser nhận cả chữ số và chữ tiếng Việt: “khu 1/khu một”, �
 
 Vận tốc và tránh vật cản do Nav2 xử lý. Mỗi goal cần status `SUCCEEDED`, sai số vị trí ≤0,30 m, góc ≤0,30 rad và pose cuối thuộc đúng mask vùng. Nav2 goal checker dùng 0,25 m/rad. BACKUP_LIMIT=0 sau undock không được tính thành bump; BUMP/CLIFF/STALL/WHEEL_DROP được ghi và hủy task.
 
-## Phân vùng và dữ liệu
-
-`maps/map.yaml`/`map.pgm` giữ nguyên byte Bài 04. Navigation dùng `config/map_navigation.yaml` với `free_thresh=0.196`, nên gray 205 là **unknown**. Grid chạy thật được so khớp với mask phân vùng. Map: 401×401, 0,05 m/pixel, origin [-10,-10,0].
-
-Phương pháp cuối: polygon thủ công trong `config/region_seeds.yaml`, cắt với thành phần free lớn nhất. 1: x<0,y≥0; 2: x<0,y<0; 3: x≥0. 257 ô free nhỏ không gán nhãn; tường/unknown không có nhãn. Các vùng không phải connected components của phòng. Thử seed distance-transform/watershed tạo 41 seed nên không chọn kết quả đó.
-
-```bash
-python3 ~/bai07_ws/src/bai07_turtlebot4/bai07_turtlebot4/map_segmentation.py
-python3 -m unittest discover -s ~/bai07_ws/src/bai07_turtlebot4/tests -v
 ```
 
 | Vùng | Goal (x,y,yaw) | Clearance map |
@@ -99,56 +80,3 @@ python3 -m unittest discover -s ~/bai07_ws/src/bai07_turtlebot4/tests -v
 | 1 | (-3.525, 2.975, 0) | 1.692 m |
 | 2 | (-3.525, -3.375, 0) | 0.550 m |
 | 3 | (4.625, -0.525, 0) | 0.550 m |
-
-Đổi tâm pixel: qx=(u+0,5)r; qy=(H-v-0,5)r; rồi xoay theo yaw origin và cộng origin. Lưu mask riêng `maps/region_labels.npy`; ảnh `maps/regions.png` chỉ minh họa, không đưa vào map server. Robot radius cấu hình 0,175 m.
-
-## Ghi log và quay demo thật
-
-Mỗi run lưu WAV, `speech.jsonl`, `navigation.jsonl`, `trajectory.csv` và log launch. `sensors/` lưu laser, snapshot costmap và ground truth chỉ để đối chiếu nghiệm thu; recorder này không gửi pose/goal/vận tốc. Chuỗi ID nối audio → transcript → command → UUID action → result. ASR `small`, language `vi`, task `transcribe`; thu PCM mono 16 kHz bằng `parec`, bỏ transient mở mic, highpass 100 Hz, ngưỡng năng lượng theo nền, chuẩn hóa mức âm ASR và gợi ý từ vựng khu 1/2/3, kiểm tra clipping/no-speech/logprob/compression trước khi phát câu cuối. ASR chạy worker riêng và chỉ nhận một câu mỗi lần bấm.
-
-Lệnh `demo_session.py` bên trên đã gộp quay tự động, không cần terminal thứ hai. Video dùng **WebM/VP8 + Opus**, 12 fps, ghép ba cửa sổ RViz/Gazebo/transcript và micro PulseAudio (highpass 100 Hz, gain audio mặc định 8 cho giọng nhỏ). FFmpeg và recorder nằm ở process session riêng; Ctrl+C được điều phối để đóng container trước khi dừng Gazebo. Mỗi video có `.webm.log` và `.webm.json`, gồm metadata và kết quả giải mã hình/âm thanh.
-
-Nếu chỉ muốn quay riêng một phiên đang mở:
-
-```bash
-python3 ~/bai07_ws/src/bai07_turtlebot4/scripts/record_demo.py /duong/dan/demo.webm
-```
-
-Recorder chờ đủ cửa sổ (mặc định 120 giây), báo rõ cửa sổ còn thiếu, từ chối màn hình khóa/video trùng tên. `--check --wait-seconds 0` chỉ kiểm tra cửa sổ, không mở micro. Dùng FFmpeg có `libvpx` và `libopus`; nếu không có binary hệ thống thì có thể dùng binary từ `imageio-ffmpeg` đã cài trong Python chạy recorder.
-
-Nói 1/2/3, sau 3 nói 1→2, cuối cùng nói 4. Chờ robot hoàn thành từng task; không dùng teleop hay gõ text thay câu nói. Chỉ công bố video sau khi xem và kiểm tra tiếng/hình. Các clip test định dạng không thay thế video nghiệm thu đầy đủ.
-
-## Kiểm tra bằng text và vật cản
-
-Các script dưới đây là **đầu vào thử**, không chứng minh ASR/micro:
-
-```bash
-source ~/bai07_ws/install/setup.bash
-source /duong/dan/run/session.env
-python3 ~/bai07_ws/src/bai07_turtlebot4/scripts/send_text_test.py 'Đi đến khu 1'
-python3 ~/bai07_ws/src/bai07_turtlebot4/scripts/run_text_checks.py --output "$BAI07_RUN/text_checks.json"
-```
-
-`check_aborted_action.py --domain DOMAIN --output DIR` kiểm tra nhánh ABORTED bằng action server tổng hợp ở một ROS domain trống, không mô phỏng robot hoặc micro.
-
-`maze_obstacle.py create/remove --output FILE` thêm/xóa box thật trong **partition đang source**; các tùy chọn `--x --y --size --name` xác định vật cản. Dùng để kiểm tra laser/costmap/đường vòng hoặc goal bị chặn. Không tính thử có va chạm/hủy là lượt đến đích thành công.
-
-Topic: `/recognized_text` (String JSON: `utterance_id`, `text`, `created_at` Unix giây, `source` microphone/text_test/audio_test; micro thêm audio_path/record_start/record_end/asr_s), `/speech_status`, `/voice_navigation_status`, `/semantic_regions`, `/voice_actual_path`. Lệnh thiếu schema hoặc quá 30 s bị từ chối. `/speech_control`: String `listen`; `/voice_cancel`: String bất kỳ.
-
-## File chính và giới hạn nghiệm thu
-
-`map_segmentation.py` tạo vùng/goal; `speech_recognition_node.py` thu/ASR; `command_parser.py` lấy nguồn/đích; `voice_navigation_node.py` quản lý action; `semantic_map_node.py` hiển thị vùng; `prepare_robot.py` undock/initial pose; `demo_panel.py` hiển thị transcript live.
-
-Bản ngày 05/11/2026 dùng tên và ID **1/2/3**. Demo micro cùng ngày đã kiểm tra trên TurtleBot 4 Simulation:
-
-| Câu nói nhận được | Kết quả đo |
-| --- | --- |
-| Đi đến khu vực Một. | Khu 1 SUCCEEDED, sai số cuối 0,2305 m |
-| Đi đến khu vực 2. | Khu 2 SUCCEEDED, sai số cuối 0,2280 m |
-| Đi đến khu vực ba. | Khu 3 SUCCEEDED, sai số cuối 0,2297 m |
-| Đi từ khu vực 1 đến khu vực 2. | Bắt đầu trong Khu 3; Khu 1 SUCCEEDED rồi mới gửi Khu 2; cả hai thành công, sai số 0,2313/0,2301 m |
-| Đi đến khu vực bốn. / năm. | INVALID_COMMAND, không gửi goal cho từng câu |
-
-Demo gốc `demo_microphone_20261105_091649_17470.webm` dài 5 phút 07,30 giây; kiểm tra giải mã toàn bộ hình/âm thanh và đối chiếu transcript/action/pose/log. Có thêm một lượt NO_SPEECH và một task Khu 1 do người dùng hủy, được giữ nguyên trong bằng chứng và không tính là task đến đích thành công. ASR của 7 câu có transcript mất 0,658–0,918 s (riêng suy luận, chưa gồm chờ/thu câu), không phải phép đo accuracy tổng quát. Log không có hazard nguy hiểm; không nhận được message CONTACTS nên chưa xác minh đầy đủ kênh contact. Lượt demo này không thêm vật cản động mới; Nav2 dùng scan/costmap cho maze.
-
-Tên chữ cái trong log cũ vẫn giữ nguyên, không sửa lịch sử thành bằng chứng tên số. Repo chỉ chứa source/config/map và README; PDF/LaTeX/ZIP/log/WAV/video/model giữ ngoài git. Video public: [Google Drive — Bài 07](https://drive.google.com/drive/folders/1mstI2gSeViKuo7cvU9tc_UAPApQFaHk_). File trên Drive tên `wk7.webm`; đã tải kiểm tra không đăng nhập và SHA256 khớp video demo gốc. Video không nằm trong git source.
